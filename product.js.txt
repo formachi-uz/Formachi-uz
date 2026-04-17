@@ -1,0 +1,129 @@
+const STOCK_SHEET_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAuvHvipkM0lTWaPiX0GI8luMC9GD5NXFClaeWKWbh2yoXU549yMwQBo47VxqXAN65o0oukba7aeTE/pub?output=csv";
+
+const products = [
+  {
+    id: 1,
+    name: "Argentina 2026 uy futbol formasi",
+    team: "argentina",
+    category: "forma",
+    price: 180000,
+    oldPrice: 320000,
+    image: "./images/products/argentina-home-2026/main.webp",
+    gallery: [
+      "./images/products/argentina-home-2026/main.webp",
+      "./images/products/argentina-home-2026/front.webp",
+      "./images/products/argentina-home-2026/back.webp",
+      "./images/products/argentina-home-2026/side.webp",
+      "./images/products/argentina-home-2026/shorts.webp"
+    ],
+    sizes: ["M", "L", "XL"]
+  },
+  {
+    id: 2,
+    name: "Arsenal 2025/26 uy futbol formasi",
+    team: "arsenal",
+    category: "forma",
+    price: 180000,
+    oldPrice: 320000,
+    image: "./images/products/arsenal-home-2025/main.webp",
+    gallery: [
+      "./images/products/arsenal-home-2025/main.webp",
+      "./images/products/arsenal-home-2025/front.webp",
+      "./images/products/arsenal-home-2025/back.webp",
+      "./images/products/arsenal-home-2025/side.webp",
+      "./images/products/arsenal-home-2025/shorts.webp"
+    ],
+    sizes: ["M", "L", "XL"]
+  }
+  // qolgan productlarni ham script.js dagidek shu yerga qo'yasan
+];
+
+function formatPrice(price) {
+  return Number(price).toLocaleString("ru-RU") + " so'm";
+}
+
+function getDiscountPercent(oldPrice, newPrice) {
+  if (!oldPrice || !newPrice || oldPrice <= newPrice) return null;
+  return Math.round(((oldPrice - newPrice) / oldPrice) * 100);
+}
+
+async function loadStockFromSheets() {
+  const response = await fetch(STOCK_SHEET_URL);
+  const csvText = await response.text();
+
+  const rows = csvText.trim().split("\n").slice(1);
+  const stockMap = {};
+
+  rows.forEach((row) => {
+    const cols = row.split(",");
+    const productName = cols[0]?.trim().replace(/^"|"$/g, "");
+    const stockValue = Number(cols[1]);
+
+    if (productName) {
+      stockMap[productName] = Number.isNaN(stockValue) ? 0 : stockValue;
+    }
+  });
+
+  return stockMap;
+}
+
+function renderProduct(product) {
+  const detail = document.getElementById("product-detail");
+  const discount = getDiscountPercent(product.oldPrice, product.price);
+  const isAvailable = Number(product.stock) > 0;
+
+  detail.innerHTML = `
+    <div class="product-detail-grid">
+      <div class="product-detail-left">
+        <img src="${product.image}" alt="${product.name}" class="product-detail-main-image" />
+      </div>
+
+      <div class="product-detail-right">
+        <h1 class="product-detail-title">${product.name}</h1>
+
+        <div class="stock-badge ${!isAvailable ? "out" : ""}">
+          Sotuvda: ${isAvailable ? "Bor" : "Qolmadi"}
+        </div>
+
+        <div class="price-box">
+          <span class="new-price">${formatPrice(product.price)}</span>
+          ${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}
+        </div>
+
+        ${discount ? `<div class="discount-badge">-${discount}% chegirma</div>` : ""}
+
+        <p class="product-detail-meta"><strong>Razmerlar:</strong> ${product.sizes.join(", ")}</p>
+        <p class="product-detail-meta"><strong>Yetkazib berish:</strong> 1-2 kun ichida</p>
+
+        <button class="order-btn ${!isAvailable ? "disabled" : ""}" ${!isAvailable ? "disabled" : ""}>
+          ${isAvailable ? "Buyurtma berish" : "Mavjud emas"}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+async function initProductPage() {
+  const params = new URLSearchParams(window.location.search);
+  const productId = Number(params.get("id"));
+
+  const product = products.find((item) => item.id === productId);
+  const detail = document.getElementById("product-detail");
+
+  if (!product) {
+    detail.innerHTML = "<p>Mahsulot topilmadi.</p>";
+    return;
+  }
+
+  try {
+    const stockMap = await loadStockFromSheets();
+    product.stock = stockMap[product.name] ?? 0;
+  } catch (error) {
+    product.stock = 0;
+  }
+
+  renderProduct(product);
+}
+
+initProductPage();
