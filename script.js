@@ -212,8 +212,9 @@ function createProductCard(product) {
   const isAvailable = Number(product.stock) > 0;
   const stockStatus = isAvailable ? "Bor" : "Qolmadi";
 
-  return `
-    <div class="product-card ${!isAvailable ? "sold-out-card" : ""}">
+  function goToProduct(productId) {
+  window.location.href = `./product.html?id=${productId}`;
+}
       <div class="card-badges">
         <span class="card-badge type-badge">${typeLabel}</span>
         ${isTop ? `<span class="card-badge top-badge">🔥 TOP</span>` : ""}
@@ -276,7 +277,11 @@ function setupTeamFilter() {
   const teamButtons = document.querySelectorAll(".team-btn");
 
   teamButtons.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (event) => {
+  event.stopPropagation();
+  const productId = button.dataset.orderId;
+  openOrderModal(productId);
+});
       const selectedTeam = button.dataset.team;
 
       teamButtons.forEach((btn) => btn.classList.remove("active"));
