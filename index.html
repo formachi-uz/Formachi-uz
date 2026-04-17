@@ -7,46 +7,115 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <header class="site-header">
     <div class="container header-inner">
       <img src="images/logo.jpg" alt="Formachi Logo" class="logo" />
     </div>
   </header>
 
+  <!-- QIDIRUV + JAMOA FILTER -->
   <section class="team-section">
     <div class="container">
-      <h2 class="section-title">Mashhur komandalar</h2>
+
+      <!-- Qidiruv qutisi -->
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="search-input"
+          class="search-input"
+          placeholder="Jamoa yoki forma nomi bo'yicha qidiring..."
+          autocomplete="off"
+        />
+        <button class="search-clear hidden" id="search-clear-btn" aria-label="Tozalash">×</button>
+      </div>
+
+      <!-- Jamoa tugmalari -->
+      <h2 class="section-title" style="margin-top:20px;">Mashhur komandalar</h2>
 
       <div class="team-list" id="team-list">
+
         <button class="team-btn active" data-team="all">
           <span class="team-dot"></span>
           <span class="team-name">Barchasi</span>
         </button>
 
         <button class="team-btn" data-team="realmadrid">
-          <span class="team-dot"></span>
+          <img src="./images/teams/realmadrid.png" alt="Real Madrid" class="team-logo" />
           <span class="team-name">Real Madrid</span>
         </button>
 
         <button class="team-btn" data-team="barcelona">
-          <span class="team-dot"></span>
+          <img src="./images/teams/barcelona.png" alt="Barcelona" class="team-logo" />
           <span class="team-name">Barcelona</span>
         </button>
 
         <button class="team-btn" data-team="mancity">
-          <span class="team-dot"></span>
+          <img src="./images/teams/mancity.png" alt="Man City" class="team-logo" />
           <span class="team-name">Man City</span>
         </button>
 
         <button class="team-btn" data-team="manunited">
-          <span class="team-dot"></span>
+          <img src="./images/teams/manunited.png" alt="Man United" class="team-logo" />
           <span class="team-name">Man United</span>
         </button>
 
-        <button class="team-btn" data-team="acmilan">
-          <span class="team-dot"></span>
+        <button class="team-btn" data-team="milan">
+          <img src="./images/teams/milan.png" alt="AC Milan" class="team-logo" />
           <span class="team-name">AC Milan</span>
         </button>
+
+        <button class="team-btn" data-team="arsenal">
+          <img src="./images/teams/arsenal.png" alt="Arsenal" class="team-logo" />
+          <span class="team-name">Arsenal</span>
+        </button>
+
+        <button class="team-btn" data-team="liverpool">
+          <img src="./images/teams/liverpool.png" alt="Liverpool" class="team-logo" />
+          <span class="team-name">Liverpool</span>
+        </button>
+
+        <button class="team-btn" data-team="chelsea">
+          <img src="./images/teams/chelsea.png" alt="Chelsea" class="team-logo" />
+          <span class="team-name">Chelsea</span>
+        </button>
+
+        <button class="team-btn" data-team="bayern">
+          <img src="./images/teams/bayern.png" alt="Bayern" class="team-logo" />
+          <span class="team-name">Bayern</span>
+        </button>
+
+        <button class="team-btn" data-team="psg">
+          <img src="./images/teams/psg.png" alt="PSG" class="team-logo" />
+          <span class="team-name">PSG</span>
+        </button>
+
+        <button class="team-btn" data-team="inter">
+          <img src="./images/teams/inter.png" alt="Inter" class="team-logo" />
+          <span class="team-name">Inter</span>
+        </button>
+
+        <button class="team-btn" data-team="tottenham">
+          <img src="./images/teams/tottenham.png" alt="Tottenham" class="team-logo" />
+          <span class="team-name">Tottenham</span>
+        </button>
+
+        <button class="team-btn" data-team="argentina">
+          <img src="./images/teams/argentina.png" alt="Argentina" class="team-logo" />
+          <span class="team-name">Argentina</span>
+        </button>
+
+        <button class="team-btn" data-team="portugal">
+          <img src="./images/teams/portugal.png" alt="Portugaliya" class="team-logo" />
+          <span class="team-name">Portugaliya</span>
+        </button>
+
+        <button class="team-btn" data-team="spain">
+          <img src="./images/teams/spain.png" alt="Ispaniya" class="team-logo" />
+          <span class="team-name">Ispaniya</span>
+        </button>
+
       </div>
     </div>
   </section>
@@ -61,42 +130,40 @@
     </div>
   </section>
 
+  <!-- Qidiruv natijalari (odatda yashirin) -->
+  <section class="products-section hidden" id="search-results-section">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title" id="search-results-title">Qidiruv natijalari</h2>
+      </div>
+      <div id="search-results-grid" class="products-grid-static"></div>
+    </div>
+  </section>
+
+  <!-- Formalar -->
   <section class="products-section" id="forma-section">
     <div class="container">
       <div class="section-head">
-        <h2 class="section-title">Formalar</h2>
+        <h2 class="section-title" id="forma-section-title">Formalar</h2>
       </div>
-
       <div class="slider-wrap">
-        <button class="slider-btn slider-btn-left" id="forma-prev" aria-label="Oldingi">
-          &#10094;
-        </button>
-
+        <button class="slider-btn slider-btn-left" id="forma-prev" aria-label="Oldingi">&#10094;</button>
         <div id="forma-products" class="products-grid"></div>
-
-        <button class="slider-btn slider-btn-right" id="forma-next" aria-label="Keyingi">
-          &#10095;
-        </button>
+        <button class="slider-btn slider-btn-right" id="forma-next" aria-label="Keyingi">&#10095;</button>
       </div>
     </div>
   </section>
 
+  <!-- Butsiylar -->
   <section class="products-section" id="boots-section">
     <div class="container">
       <div class="section-head">
         <h2 class="section-title">Butsiylar</h2>
       </div>
-
       <div class="slider-wrap">
-        <button class="slider-btn slider-btn-left" id="boots-prev" aria-label="Oldingi">
-          &#10094;
-        </button>
-
+        <button class="slider-btn slider-btn-left" id="boots-prev" aria-label="Oldingi">&#10094;</button>
         <div id="boots-products" class="products-grid"></div>
-
-        <button class="slider-btn slider-btn-right" id="boots-next" aria-label="Keyingi">
-          &#10095;
-        </button>
+        <button class="slider-btn slider-btn-right" id="boots-next" aria-label="Keyingi">&#10095;</button>
       </div>
     </div>
   </section>
@@ -107,6 +174,7 @@
     </div>
   </footer>
 
+  <!-- BUYURTMA MODAL -->
   <div class="modal-overlay" id="order-modal">
     <div class="order-modal">
       <button class="modal-close" id="modal-close-btn" aria-label="Yopish">×</button>
@@ -114,9 +182,11 @@
       <div class="modal-header">
         <p class="modal-subtitle">Buyurtma</p>
         <h3 class="modal-title">Mahsulot buyurtma qilish</h3>
+        <p id="modal-price-display" style="font-size:22px;font-weight:800;margin-top:6px;min-height:28px;"></p>
       </div>
 
       <form id="order-form" class="order-form">
+
         <div class="form-group">
           <label for="order-product">Mahsulot</label>
           <input type="text" id="order-product" name="product" readonly />
@@ -127,7 +197,6 @@
             <label for="order-name">Ism</label>
             <input type="text" id="order-name" name="name" placeholder="Ismingiz" required />
           </div>
-
           <div class="form-group">
             <label for="order-phone">Telefon</label>
             <input type="tel" id="order-phone" name="phone" placeholder="+998 90 123 45 67" required />
@@ -141,7 +210,6 @@
               <option value="">Tanlang</option>
             </select>
           </div>
-
           <div class="form-group">
             <label for="order-quantity">Soni</label>
             <input type="number" id="order-quantity" name="quantity" min="1" value="1" required />
@@ -151,7 +219,7 @@
         <div class="form-group">
           <label class="checkbox-row">
             <input type="checkbox" id="order-print-toggle" />
-            <span>Orqasiga ism/raqam yozdirish</span>
+            <span>Orqasiga ism/raqam yozdirish (+30 000 so'm)</span>
           </label>
         </div>
 
@@ -162,12 +230,13 @@
 
         <div class="form-group">
           <label for="order-address">Yetkazib berish manzili</label>
-          <textarea id="order-address" name="address" rows="3" placeholder="Viloyat, tuman, mahalla, uy manzil" required></textarea>
+          <textarea id="order-address" name="address" rows="3"
+                    placeholder="Viloyat, tuman, mahalla, uy manzil" required></textarea>
         </div>
 
         <div class="form-group">
-          <label for="order-note">Qo‘shimcha izoh</label>
-          <textarea id="order-note" name="note" rows="2" placeholder="Qo‘shimcha ma’lumot"></textarea>
+          <label for="order-note">Qo'shimcha izoh</label>
+          <textarea id="order-note" name="note" rows="2" placeholder="Qo'shimcha ma'lumot"></textarea>
         </div>
 
         <button type="submit" class="submit-order-btn" id="submit-order-btn">
