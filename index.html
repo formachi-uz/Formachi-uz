@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formachi</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <img src="images/logo.jpg" alt="Formachi Logo" class="logo" />
+    </div>
+  </header>
+
+  <section class="team-section">
+    <div class="container">
+      <h2 class="section-title">Mashhur komandalar</h2>
+
+      <div class="team-list" id="team-list">
+        <button class="team-btn active" data-team="all">
+          <span class="team-dot"></span>
+          <span class="team-name">Barchasi</span>
+        </button>
+
+        <button class="team-btn" data-team="realmadrid">
+          <span class="team-dot"></span>
+          <span class="team-name">Real Madrid</span>
+        </button>
+
+        <button class="team-btn" data-team="barcelona">
+          <span class="team-dot"></span>
+          <span class="team-name">Barcelona</span>
+        </button>
+
+        <button class="team-btn" data-team="mancity">
+          <span class="team-dot"></span>
+          <span class="team-name">Man City</span>
+        </button>
+
+        <button class="team-btn" data-team="manunited">
+          <span class="team-dot"></span>
+          <span class="team-name">Man United</span>
+        </button>
+
+        <button class="team-btn" data-team="acmilan">
+          <span class="team-dot"></span>
+          <span class="team-name">AC Milan</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero">
+    <div class="container hero-inner">
+      <p class="hero-subtitle">Premium football store</p>
+      <h1 class="hero-title">Original futbol formalari va butsiylar</h1>
+      <p class="hero-text">
+        Ismingizni yozdiring • Tez buyurtma • 1-2 kun ichida yetkazib berish
+      </p>
+    </div>
+  </section>
+
+  <section class="products-section" id="forma-section">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title">Formalar</h2>
+      </div>
+
+      <div class="slider-wrap">
+        <button class="slider-btn slider-btn-left" id="forma-prev" aria-label="Oldingi">
+          &#10094;
+        </button>
+
+        <div id="forma-products" class="products-grid"></div>
+
+        <button class="slider-btn slider-btn-right" id="forma-next" aria-label="Keyingi">
+          &#10095;
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="products-section" id="boots-section">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title">Butsiylar</h2>
+      </div>
+
+      <div class="slider-wrap">
+        <button class="slider-btn slider-btn-left" id="boots-prev" aria-label="Oldingi">
+          &#10094;
+        </button>
+
+        <div id="boots-products" class="products-grid"></div>
+
+        <button class="slider-btn slider-btn-right" id="boots-next" aria-label="Keyingi">
+          &#10095;
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Formachi. Barcha huquqlar himoyalangan.</p>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="order-modal">
+    <div class="order-modal">
+      <button class="modal-close" id="modal-close-btn" aria-label="Yopish">×</button>
+
+      <div class="modal-header">
+        <p class="modal-subtitle">Buyurtma</p>
+        <h3 class="modal-title">Mahsulot buyurtma qilish</h3>
+      </div>
+
+      <form id="order-form" class="order-form">
+        <div class="form-group">
+          <label for="order-product">Mahsulot</label>
+          <input type="text" id="order-product" name="product" readonly />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="order-name">Ism</label>
+            <input type="text" id="order-name" name="name" placeholder="Ismingiz" required />
+          </div>
+
+          <div class="form-group">
+            <label for="order-phone">Telefon</label>
+            <input type="tel" id="order-phone" name="phone" placeholder="+998 90 123 45 67" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="order-size">Razmer</label>
+            <select id="order-size" name="size" required>
+              <option value="">Tanlang</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="order-quantity">Soni</label>
+            <input type="number" id="order-quantity" name="quantity" min="1" value="1" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-row">
+            <input type="checkbox" id="order-print-toggle" />
+            <span>Orqasiga ism/raqam yozdirish</span>
+          </label>
+        </div>
+
+        <div class="form-group hidden" id="print-text-group">
+          <label for="order-print-text">Yoziladigan ism yoki raqam</label>
+          <input type="text" id="order-print-text" name="printText" placeholder="Masalan: SALAH 11" />
+        </div>
+
+        <div class="form-group">
+          <label for="order-address">Yetkazib berish manzili</label>
+          <textarea id="order-address" name="address" rows="3" placeholder="Viloyat, tuman, mahalla, uy manzil" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="order-note">Qo‘shimcha izoh</label>
+          <textarea id="order-note" name="note" rows="2" placeholder="Qo‘shimcha ma’lumot"></textarea>
+        </div>
+
+        <button type="submit" class="submit-order-btn" id="submit-order-btn">
+          Buyurtmani yuborish
+        </button>
+
+        <p class="form-status" id="form-status"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
