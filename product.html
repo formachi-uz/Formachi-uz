@@ -3,90 +3,702 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mahsulot</title>
+  <title>Mahsulot — Formachi</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="extra.css" />
+  <style>
+    /* ── PAGE WRAPPER ─────────────────────────────── */
+    .pd-page {
+      background: #f5f7fb;
+      min-height: 100vh;
+      padding-bottom: 80px; /* mobile nav space */
+    }
+
+    /* ── BACK LINK ────────────────────────────────── */
+    .pd-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #2563eb;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 18px 0 12px;
+      transition: gap 0.18s;
+    }
+    .pd-back:hover { gap: 10px; }
+    .pd-back svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── CARD WRAPPER ─────────────────────────────── */
+    .pd-card {
+      background: #fff;
+      border-radius: 24px;
+      border: 1px solid #e5e7eb;
+      padding: 28px;
+      margin-bottom: 32px;
+    }
+
+    /* ── GRID LAYOUT ──────────────────────────────── */
+    .pd-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    /* ── LEFT: GALLERY ────────────────────────────── */
+    .pd-main-wrap {
+      background: #f8fafc;
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 420px;
+      margin-bottom: 14px;
+      position: relative;
+      cursor: zoom-in;
+    }
+    .pd-main-wrap.zoomed { cursor: zoom-out; }
+
+    .pd-main-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.32s ease, opacity 0.18s ease;
+      transform-origin: center center;
+      pointer-events: none;
+    }
+    .pd-main-wrap.zoomed .pd-main-img {
+      transform: scale(1.85);
+    }
+
+    /* Fade transition helper */
+    .pd-main-img.fading { opacity: 0; }
+
+    .pd-thumbs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pd-thumb {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+      background: #f8fafc;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.18s, transform 0.18s;
+      flex-shrink: 0;
+      padding: 4px;
+    }
+    .pd-thumb:hover { transform: translateY(-2px); border-color: #94a3b8; }
+    .pd-thumb.active { border-color: #1d4ed8; }
+    .pd-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .pd-thumb-labels {
+      display: flex;
+      gap: 8px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+    .pd-thumb-label {
+      width: 70px;
+      font-size: 11px;
+      color: #9ca3af;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* ── RIGHT: INFO ──────────────────────────────── */
+    .pd-type-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 13px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.88);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      margin-bottom: 12px;
+    }
+
+    .pd-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #111827;
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    /* Stock */
+    .pd-stock {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .pd-stock.in  { background: #ecfdf5; color: #166534; }
+    .pd-stock.out { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .pd-stock-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .pd-stock.in  .pd-stock-dot { background: #16a34a; }
+    .pd-stock.out .pd-stock-dot { background: #dc2626; }
+
+    /* Price row */
+    .pd-price-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .pd-price-current {
+      font-size: 32px;
+      font-weight: 900;
+      color: #dc2626;
+    }
+    .pd-price-old {
+      font-size: 16px;
+      color: #9ca3af;
+      text-decoration: line-through;
+    }
+    .pd-discount-badge {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .pd-final-price-note {
+      font-size: 13px;
+      color: #059669;
+      font-weight: 700;
+      margin-bottom: 20px;
+      min-height: 20px;
+      transition: 0.2s;
+    }
+
+    /* Divider */
+    .pd-divider {
+      height: 1px;
+      background: #f1f5f9;
+      margin: 18px 0;
+    }
+
+    /* Size selector */
+    .pd-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+    .pd-sizes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .pd-size-btn {
+      min-width: 52px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e5e7eb;
+      background: #f8fafc;
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+      cursor: pointer;
+      transition: 0.18s;
+      font-family: inherit;
+    }
+    .pd-size-btn:hover:not(.pd-size-disabled) {
+      border-color: #1d4ed8;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+    .pd-size-btn.pd-size-active {
+      border-color: #1d4ed8;
+      background: #1d4ed8;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(29,78,216,0.28);
+    }
+    .pd-size-btn.pd-size-disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+    .pd-size-error {
+      font-size: 12px;
+      color: #dc2626;
+      font-weight: 600;
+      margin-top: -12px;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .pd-size-error.show { display: block; }
+
+    /* Personalization */
+    .pd-personalize-toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1.5px solid #e5e7eb;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: 0.18s;
+      margin-bottom: 12px;
+      user-select: none;
+    }
+    .pd-personalize-toggle:hover {
+      border-color: #94a3b8;
+      background: #f1f5f9;
+    }
+    .pd-personalize-toggle.checked {
+      border-color: #1d4ed8;
+      background: #eff6ff;
+    }
+    .pd-check-box {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid #d1d5db;
+      background: #fff;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      transition: 0.18s;
+    }
+    .pd-personalize-toggle.checked .pd-check-box {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+    .pd-check-icon {
+      display: none;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .pd-personalize-toggle.checked .pd-check-icon { display: block; }
+    .pd-check-label { flex: 1; }
+    .pd-check-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+    .pd-check-sub {
+      font-size: 12px;
+      color: #059669;
+      font-weight: 700;
+    }
+
+    .pd-personalize-input-wrap {
+      display: none;
+      margin-bottom: 16px;
+    }
+    .pd-personalize-input-wrap.show { display: block; }
+    .pd-personalize-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #111827;
+      outline: none;
+      transition: 0.2s;
+      background: #fff;
+    }
+    .pd-personalize-input:focus {
+      border-color: #1d4ed8;
+      box-shadow: 0 0 0 3px rgba(29,78,216,0.1);
+    }
+    .pd-personalize-input::placeholder { color: #9ca3af; }
+
+    /* Delivery badge */
+    .pd-delivery {
+      font-size: 13px;
+      color: #059669;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    /* Features list */
+    .pd-features {
+      background: #f8fafc;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      color: #374151;
+      line-height: 2;
+    }
+
+    /* Order button */
+    .pd-order-btn {
+      width: 100%;
+      padding: 17px;
+      border-radius: 16px;
+      border: none;
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      transition: 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .pd-order-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(29,78,216,0.32);
+    }
+    .pd-order-btn:active:not(:disabled) { transform: translateY(0); }
+    .pd-order-btn:disabled {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    /* Sold-out card overlay */
+    .pd-sold-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.45);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #991b1b;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      border-radius: 18px;
+    }
+
+    /* ── MOBILE BOTTOM ORDER BAR ──────────────────── */
+    .pd-mobile-cta {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 1px solid #e5e7eb;
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      z-index: 90;
+      box-shadow: 0 -4px 20px rgba(15,23,42,0.1);
+    }
+    .pd-mobile-cta-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pd-mobile-price {
+      flex: 1;
+    }
+    .pd-mobile-price-label {
+      font-size: 11px;
+      color: #6b7280;
+      font-weight: 600;
+      margin-bottom: 1px;
+    }
+    .pd-mobile-price-value {
+      font-size: 20px;
+      font-weight: 900;
+      color: #dc2626;
+    }
+    .pd-mobile-order-btn {
+      flex: 2;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      transition: 0.18s;
+      font-family: inherit;
+    }
+    .pd-mobile-order-btn:disabled {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      cursor: not-allowed;
+    }
+
+    /* ── BOTTOM NAV ───────────────────────────────── */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(15,23,42,0.08);
+      z-index: 100;
+      padding: 8px 0;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -2px 20px rgba(15,23,42,0.08);
+    }
+    .bottom-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 8px;
+    }
+    .bottom-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 4px;
+      border-radius: 14px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
+      text-decoration: none;
+      transition: 0.18s;
+      color: #9ca3af;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bottom-nav-item:hover { color: #374151; }
+    .bottom-nav-item.active { color: #1d4ed8; }
+    .bottom-nav-item.telegram { color: #0088cc; }
+    .bottom-nav-icon {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: 0.18s;
+    }
+    .bottom-nav-item.active .bottom-nav-icon {
+      background: #eff6ff;
+    }
+    .bottom-nav-item.telegram .bottom-nav-icon {
+      background: rgba(0,136,204,0.1);
+    }
+    .bottom-nav-icon svg { width: 22px; height: 22px; }
+    .bottom-nav-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    /* ── NOT FOUND ────────────────────────────────── */
+    .pd-not-found {
+      text-align: center;
+      padding: 80px 20px;
+      color: #6b7280;
+    }
+    .pd-not-found h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; color: #111827; }
+
+    /* ── RESPONSIVE ───────────────────────────────── */
+    @media (max-width: 768px) {
+      .pd-grid { grid-template-columns: 1fr; gap: 20px; }
+      .pd-main-wrap { height: 300px; }
+      .pd-title { font-size: 21px; }
+      .pd-price-current { font-size: 26px; }
+      .pd-card { padding: 18px; border-radius: 18px; }
+      .pd-order-btn { display: none; } /* mobile CTA replaces this */
+      .pd-mobile-cta { display: block; }
+      .bottom-nav { display: block; }
+      .pd-page { padding-bottom: 140px; }
+    }
+    @media (max-width: 480px) {
+      .pd-main-wrap { height: 260px; }
+      .pd-thumb { width: 60px; height: 60px; }
+      .pd-thumb-label { width: 60px; }
+    }
+  </style>
 </head>
-<body>
+<body class="pd-page">
+
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="./index.html">
-        <img src="./images/logo.jpg" alt="Formachi Logo" class="logo" />
+      <a href="index.html" style="display:flex;align-items:center;gap:0;">
+        <img src="images/logo.jpg" alt="Formachi" class="logo" />
       </a>
+      <div class="header-brand">
+        <h1 class="header-title">Original futbol formalari va butsiylar</h1>
+        <p class="header-sub">Ismingizni yozdiring &bull; Tez buyurtma &bull; 1-2 kun</p>
+      </div>
+      <div class="header-pills">
+        <span class="header-pill">🚚 1-2 kun</span>
+        <span class="header-pill">✍️ Ism yozish</span>
+      </div>
     </div>
   </header>
 
-  <section class="product-page">
-    <div class="container">
-      <a href="./index.html" class="back-link">← Orqaga</a>
+  <!-- PRODUCT PAGE CONTENT -->
+  <main class="container" id="pd-main">
+    <a href="index.html" class="pd-back" id="pd-back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M19 12H5M12 5l-7 7 7 7"/>
+      </svg>
+      Orqaga
+    </a>
 
-      <div id="product-detail" class="product-detail">
-        <p>Yuklanmoqda...</p>
+    <!-- JS renders here -->
+    <div id="pd-content"></div>
+  </main>
+
+  <!-- MOBILE BOTTOM CTA (rendered by JS) -->
+  <div class="pd-mobile-cta" id="pd-mobile-cta" style="display:none;">
+    <div class="pd-mobile-cta-inner">
+      <div class="pd-mobile-price">
+        <div class="pd-mobile-price-label">Narx</div>
+        <div class="pd-mobile-price-value" id="mob-price-display">—</div>
       </div>
+      <button class="pd-mobile-order-btn" id="mob-order-btn">
+        Buyurtma berish
+      </button>
     </div>
-  </section>
+  </div>
 
-  <script src="./product.js"></script>
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Asosiy navigatsiya">
+    <div class="bottom-nav-inner">
+
+      <a href="index.html" class="bottom-nav-item" id="nav-home">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12L12 3l9 9"/>
+            <path d="M9 21V12h6v9"/>
+            <path d="M3 12v9h6V12H9M15 12v9h6V12H15"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Bosh sahifa</span>
+      </a>
+
+      <button class="bottom-nav-item" id="nav-search" onclick="focusSearch()">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Qidiruv</span>
+      </button>
+
+      <button class="bottom-nav-item" id="nav-cart" onclick="openCartPlaceholder()">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Savat</span>
+      </button>
+
+      <a href="https://t.me/formachi_uz" target="_blank" class="bottom-nav-item telegram" id="nav-telegram">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.94z"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Telegram</span>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- ORDER MODAL -->
+  <div class="modal-overlay" id="order-modal">
+    <div class="order-modal">
+      <button class="modal-close" id="modal-close-btn" aria-label="Yopish">×</button>
+      <div class="modal-header">
+        <p class="modal-subtitle">Buyurtma</p>
+        <h3 class="modal-title">Mahsulot buyurtma qilish</h3>
+        <p id="modal-price-display"
+           style="font-size:22px;font-weight:800;margin-top:6px;min-height:28px;"></p>
+      </div>
+      <form id="order-form" class="order-form">
+        <div class="form-group">
+          <label for="order-product">Mahsulot</label>
+          <input type="text" id="order-product" name="product" readonly />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="order-name">Ism</label>
+            <input type="text" id="order-name" name="name" placeholder="Ismingiz" required />
+          </div>
+          <div class="form-group">
+            <label for="order-phone">Telefon</label>
+            <input type="tel" id="order-phone" name="phone"
+                   placeholder="+998 90 123 45 67" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="order-size">Razmer</label>
+            <select id="order-size" name="size" required>
+              <option value="">Tanlang</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="order-quantity">Soni</label>
+            <input type="number" id="order-quantity" name="quantity" min="1" value="1" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-row">
+            <input type="checkbox" id="order-print-toggle" />
+            <span>Orqasiga ism/raqam yozdirish (+30 000 so'm)</span>
+          </label>
+        </div>
+        <div class="form-group hidden" id="print-text-group">
+          <label for="order-print-text">Yoziladigan ism yoki raqam</label>
+          <input type="text" id="order-print-text" name="printText"
+                 placeholder="Masalan: SALAH 11" />
+        </div>
+        <div class="form-group">
+          <label for="order-address">Yetkazib berish manzili</label>
+          <textarea id="order-address" name="address" rows="3"
+                    placeholder="Viloyat, tuman, mahalla, uy manzil" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="order-note">Qo'shimcha izoh</label>
+          <textarea id="order-note" name="note" rows="2"
+                    placeholder="Qo'shimcha ma'lumot"></textarea>
+        </div>
+        <button type="submit" class="submit-order-btn" id="submit-order-btn">
+          Buyurtmani yuborish
+        </button>
+        <p class="form-status" id="form-status"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="products-data.js"></script>
+  <script src="product.js"></script>
 </body>
 </html>
-<div id="product-order-modal" class="order-modal">
-  <div class="order-modal-content">
-    <button id="product-modal-close-btn" class="modal-close-btn">×</button>
-
-    <h2>Mahsulot buyurtma qilish</h2>
-
-    <form id="product-order-form">
-      <div class="form-group">
-        <label>Mahsulot</label>
-        <input type="text" id="product-order-name" readonly />
-      </div>
-
-      <div class="form-group">
-        <label>Razmer</label>
-        <select id="product-order-size" required></select>
-      </div>
-
-      <div class="form-group">
-        <label>Ismingiz</label>
-        <input type="text" id="customer-name" required />
-      </div>
-
-      <div class="form-group">
-        <label>Telefon</label>
-        <input type="text" id="customer-phone" required />
-      </div>
-
-      <div class="form-group">
-        <label>Soni</label>
-        <input type="number" id="product-order-quantity" value="1" min="1" />
-      </div>
-
-      <div class="form-group checkbox-group">
-        <label>
-          <input type="checkbox" id="product-print-toggle" />
-          Orqasiga ism/raqam yozdirish
-        </label>
-      </div>
-
-      <div id="product-print-group" class="form-group hidden">
-        <label>Yoziladigan ism yoki raqam</label>
-        <input type="text" id="product-print-text" />
-      </div>
-
-      <div class="form-group">
-        <label>Yetkazib berish manzili</label>
-        <textarea id="product-order-address" required></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Qo‘shimcha izoh</label>
-        <textarea id="product-order-note"></textarea>
-      </div>
-
-      <div id="product-form-status" class="form-status"></div>
-
-      <button type="submit" id="product-submit-btn" class="order-btn">
-        Buyurtmani yuborish
-      </button>
-    </form>
-  </div>
-</div>
