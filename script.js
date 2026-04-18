@@ -1,623 +1,157 @@
-const ORDER_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwpMa6YPk2dZtGPXXTtU1Kg91YuAkVksM_pFTPcj_NUZvJtWIt6d9AnENZBgmVTSyfnVA/exec";
-const STOCK_SHEET_URL =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQAuvHvipkM0lTWaPiX0GI8luMC9GD5NXFClaeWKWbh2yoXU549yMwQBo47VxqXAN65o0oukba7aeTE/pub?output=csv";
+/* ════════════════════════════════════════════════════
+   FORMACHI script.js  —  To'liq yangilangan versiya
+   ════════════════════════════════════════════════════ */
 
-const PRINT_EXTRA_PRICE = 30000;
 
-// ─── MAHSULOTLAR ──────────────────────────────────────────────────────────────
-const products = [
+
+
+/* ── LIGALAR ─────────────────────────────────────────── */
+const LEAGUES = [
   {
-    id: 1,
-    name: "Argentina 2026 uy futbol formasi",
-    team: "argentina",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/argentina-home-2026/main.webp",
-    gallery: [
-      "./images/products/argentina-home-2026/main.webp",
-      "./images/products/argentina-home-2026/front.webp",
-      "./images/products/argentina-home-2026/back.webp",
-      "./images/products/argentina-home-2026/side.webp",
-      "./images/products/argentina-home-2026/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
+    id:    "all",
+    name:  "Barchasi",
+    emoji: "⚽",
+    logo:  null,
+    teams: [] /* bo'sh = hammasi */
   },
   {
-    id: 2,
-    name: "Arsenal 2025/26 uy futbol formasi",
-    team: "arsenal",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/arsenal-home-2025/main.webp",
-    gallery: [
-      "./images/products/arsenal-home-2025/main.webp",
-      "./images/products/arsenal-home-2025/front.webp",
-      "./images/products/arsenal-home-2025/back.webp",
-      "./images/products/arsenal-home-2025/side.webp",
-      "./images/products/arsenal-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
+    id:    "premierleague",
+    name:  "Premier League",
+    emoji: "🏴",
+    logo:  "./images/leagues/premierleague.png",
+    teams: ["arsenal","liverpool","chelsea","mancity","manunited","tottenham"]
   },
   {
-    id: 3,
-    name: "Barcelona 2024/25 safar futbol formasi",
-    team: "barcelona",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/barcelona-away-2024/main.webp",
-    gallery: [
-      "./images/products/barcelona-away-2024/main.webp",
-      "./images/products/barcelona-away-2024/front.webp",
-      "./images/products/barcelona-away-2024/back.webp",
-      "./images/products/barcelona-away-2024/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
+    id:    "laliga",
+    name:  "La Liga",
+    emoji: "🇪🇸",
+    logo:  "./images/leagues/laliga.png",
+    teams: ["realmadrid","barcelona"]
   },
   {
-    id: 4,
-    name: "Barcelona 2025/26 safar futbol formasi",
-    team: "barcelona",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/barcelona-away-2025/main.webp",
-    gallery: [
-      "./images/products/barcelona-away-2025/main.webp",
-      "./images/products/barcelona-away-2025/front.webp",
-      "./images/products/barcelona-away-2025/back.webp",
-      "./images/products/barcelona-away-2025/side.webp",
-      "./images/products/barcelona-away-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
+    id:    "bundesliga",
+    name:  "Bundesliga",
+    emoji: "🇩🇪",
+    logo:  "./images/leagues/bundesliga.png",
+    teams: ["bayern"]
   },
   {
-    id: 5,
-    name: "Barcelona 2025/26 uy futbol formasi",
-    team: "barcelona",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/barcelona-home-2025/main.webp",
-    gallery: [
-      "./images/products/barcelona-home-2025/main.webp",
-      "./images/products/barcelona-home-2025/front.webp",
-      "./images/products/barcelona-home-2025/back.webp",
-      "./images/products/barcelona-home-2025/side.webp",
-      "./images/products/barcelona-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
+    id:    "seriea",
+    name:  "Serie A",
+    emoji: "🇮🇹",
+    logo:  "./images/leagues/seriea.png",
+    teams: ["milan","inter"]
   },
   {
-    id: 6,
-    name: "Barcelona 2025/26 uchinchi futbol formasi",
-    team: "barcelona",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/barcelona-third-2025/main.webp",
-    gallery: [
-      "./images/products/barcelona-third-2025/main.webp",
-      "./images/products/barcelona-third-2025/front.webp",
-      "./images/products/barcelona-third-2025/back.webp",
-      "./images/products/barcelona-third-2025/side.webp",
-      "./images/products/barcelona-third-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
+    id:    "ligue1",
+    name:  "Ligue 1",
+    emoji: "🇫🇷",
+    logo:  "./images/leagues/ligue1.png",
+    teams: ["psg"]
   },
   {
-    id: 7,
-    name: "Bayern München 2025/26 uy futbol formasi",
-    team: "bayern",
-    category: "forma",
-    price: 180000,
-    oldPrice: 335000,
-    image: "./images/products/bayern-home-2025/main.webp",
-    gallery: [
-      "./images/products/bayern-home-2025/main.webp",
-      "./images/products/bayern-home-2025/front.webp",
-      "./images/products/bayern-home-2025/back.webp",
-      "./images/products/bayern-home-2025/side.webp",
-      "./images/products/bayern-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 8,
-    name: "Bayern München 2025/26 uchinchi futbol formasi",
-    team: "bayern",
-    category: "forma",
-    price: 180000,
-    oldPrice: 335000,
-    image: "./images/products/bayern-third-2025/main.webp",
-    gallery: [
-      "./images/products/bayern-third-2025/main.webp",
-      "./images/products/bayern-third-2025/front.webp",
-      "./images/products/bayern-third-2025/back.webp",
-      "./images/products/bayern-third-2025/side.webp",
-      "./images/products/bayern-third-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 9,
-    name: "Chelsea 2025/26 safar futbol formasi",
-    team: "chelsea",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/chelsea-away-2025/main.webp",
-    gallery: [
-      "./images/products/chelsea-away-2025/main.webp",
-      "./images/products/chelsea-away-2025/front.webp",
-      "./images/products/chelsea-away-2025/back.webp",
-      "./images/products/chelsea-away-2025/side.webp",
-      "./images/products/chelsea-away-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 10,
-    name: "Chelsea 2025/26 uchinchi futbol formasi",
-    team: "chelsea",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/chelsea-third-2025/main.webp",
-    gallery: [
-      "./images/products/chelsea-third-2025/main.webp",
-      "./images/products/chelsea-third-2025/front.webp",
-      "./images/products/chelsea-third-2025/back.webp",
-      "./images/products/chelsea-third-2025/side.webp",
-      "./images/products/chelsea-third-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 11,
-    name: "Inter 2025/26 safar futbol formasi",
-    team: "inter",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/inter-away-2025/main.webp",
-    gallery: [
-      "./images/products/inter-away-2025/main.webp",
-      "./images/products/inter-away-2025/front.webp",
-      "./images/products/inter-away-2025/back.webp",
-      "./images/products/inter-away-2025/side.webp",
-      "./images/products/inter-away-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 12,
-    name: "Inter 2025/26 uy futbol formasi",
-    team: "inter",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/inter-home-2025/main.webp",
-    gallery: [
-      "./images/products/inter-home-2025/main.webp",
-      "./images/products/inter-home-2025/front.webp",
-      "./images/products/inter-home-2025/back.webp",
-      "./images/products/inter-home-2025/side.webp",
-      "./images/products/inter-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 13,
-    name: "Liverpool 2025/26 uchinchi futbol formasi",
-    team: "liverpool",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/liverpool-third-2025/main.webp",
-    gallery: [
-      "./images/products/liverpool-third-2025/main.webp",
-      "./images/products/liverpool-third-2025/front.webp",
-      "./images/products/liverpool-third-2025/back.webp",
-      "./images/products/liverpool-third-2025/side.webp",
-      "./images/products/liverpool-third-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 14,
-    name: "Manchester City 2025 CWC uy futbol formasi",
-    team: "mancity",
-    category: "forma",
-    price: 190000,
-    oldPrice: 335000,
-    image: "./images/products/mancity-home-cwc-2025/main.webp",
-    gallery: [
-      "./images/products/mancity-home-cwc-2025/main.webp",
-      "./images/products/mancity-home-cwc-2025/front.webp",
-      "./images/products/mancity-home-cwc-2025/back.webp",
-      "./images/products/mancity-home-cwc-2025/side.webp",
-      "./images/products/mancity-home-cwc-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 15,
-    name: "Manchester City 2025/26 safar futbol formasi",
-    team: "mancity",
-    category: "forma",
-    price: 180000,
-    oldPrice: 335000,
-    image: "./images/products/mancity-away-2025/main.webp",
-    gallery: [
-      "./images/products/mancity-away-2025/main.webp",
-      "./images/products/mancity-away-2025/front.webp",
-      "./images/products/mancity-away-2025/back.webp",
-      "./images/products/mancity-away-2025/side.webp",
-      "./images/products/mancity-away-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 16,
-    name: "Manchester City 2025/26 uchinchi futbol formasi",
-    team: "mancity",
-    category: "forma",
-    price: 180000,
-    oldPrice: 335000,
-    image: "./images/products/mancity-third-2025/main.webp",
-    gallery: [
-      "./images/products/mancity-third-2025/main.webp",
-      "./images/products/mancity-third-2025/front.webp",
-      "./images/products/mancity-third-2025/back.webp",
-      "./images/products/mancity-third-2025/side.webp",
-      "./images/products/mancity-third-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 17,
-    name: "Manchester City 2025/26 uy futbol formasi",
-    team: "mancity",
-    category: "forma",
-    price: 180000,
-    oldPrice: 335000,
-    image: "./images/products/mancity-home-2025/main.webp",
-    gallery: [
-      "./images/products/mancity-home-2025/main.webp",
-      "./images/products/mancity-home-2025/front.webp",
-      "./images/products/mancity-home-2025/back.webp",
-      "./images/products/mancity-home-2025/side.webp",
-      "./images/products/mancity-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 18,
-    name: "Manchester United 2025/26 uy futbol formasi",
-    team: "manunited",
-    category: "forma",
-    price: 180000,
-    oldPrice: 340000,
-    image: "./images/products/manunited-home-2025/main.webp",
-    gallery: [
-      "./images/products/manunited-home-2025/main.webp",
-      "./images/products/manunited-home-2025/front.webp",
-      "./images/products/manunited-home-2025/back.webp",
-      "./images/products/manunited-home-2025/side.webp",
-      "./images/products/manunited-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 19,
-    name: "Milan 2025/26 uy futbol formasi",
-    team: "milan",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/milan-home-2025/main.webp",
-    gallery: [
-      "./images/products/milan-home-2025/main.webp",
-      "./images/products/milan-home-2025/front.webp",
-      "./images/products/milan-home-2025/back.webp",
-      "./images/products/milan-home-2025/side.webp",
-      "./images/products/milan-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 20,
-    name: "Portugaliya 2025 safar futbol formasi",
-    team: "portugal",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/portugal-away-2025/main.webp",
-    gallery: [
-      "./images/products/portugal-away-2025/main.webp",
-      "./images/products/portugal-away-2025/front.webp",
-      "./images/products/portugal-away-2025/back.webp",
-      "./images/products/portugal-away-2025/side.webp",
-      "./images/products/portugal-away-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 21,
-    name: "Portugaliya 2026 uy futbol formasi",
-    team: "portugal",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/portugal-home-2026/main.webp",
-    gallery: [
-      "./images/products/portugal-home-2026/main.webp",
-      "./images/products/portugal-home-2026/front.webp",
-      "./images/products/portugal-home-2026/back.webp",
-      "./images/products/portugal-home-2026/side.webp",
-      "./images/products/portugal-home-2026/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 22,
-    name: "PSG 2025/26 uy futbol formasi",
-    team: "psg",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/psg-home-2025/main.webp",
-    gallery: [
-      "./images/products/psg-home-2025/main.webp",
-      "./images/products/psg-home-2025/front.webp",
-      "./images/products/psg-home-2025/back.webp",
-      "./images/products/psg-home-2025/side.webp",
-      "./images/products/psg-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 23,
-    name: "PSG 2025/26 uchinchi futbol formasi",
-    team: "psg",
-    category: "forma",
-    price: 180000,
-    oldPrice: 330000,
-    image: "./images/products/psg-third-2025/main.webp",
-    gallery: [
-      "./images/products/psg-third-2025/main.webp",
-      "./images/products/psg-third-2025/front.webp",
-      "./images/products/psg-third-2025/back.webp",
-      "./images/products/psg-third-2025/side.webp",
-      "./images/products/psg-third-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 25,
-    name: "Real Madrid 2025/26 uchinchi futbol formasi – uzun yeng",
-    team: "realmadrid",
-    category: "forma",
-    price: 190000,
-    oldPrice: 340000,
-    image: "./images/products/realmadrid-third-long-2025/main.webp",
-    gallery: [
-      "./images/products/realmadrid-third-long-2025/main.webp",
-      "./images/products/realmadrid-third-long-2025/front.webp",
-      "./images/products/realmadrid-third-long-2025/back.webp",
-      "./images/products/realmadrid-third-long-2025/side.webp",
-      "./images/products/realmadrid-third-long-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 26,
-    name: "Real Madrid 2025/26 uchinchi futbol formasi – qisqa yeng",
-    team: "realmadrid",
-    category: "forma",
-    price: 180000,
-    oldPrice: 340000,
-    image: "./images/products/realmadrid-third-short-2025/main.webp",
-    gallery: [
-      "./images/products/realmadrid-third-short-2025/main.webp",
-      "./images/products/realmadrid-third-short-2025/front.webp",
-      "./images/products/realmadrid-third-short-2025/back.webp",
-      "./images/products/realmadrid-third-short-2025/side.webp",
-      "./images/products/realmadrid-third-short-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 27,
-    name: "Real Madrid 2025/26 uy futbol formasi",
-    team: "realmadrid",
-    category: "forma",
-    price: 180000,
-    oldPrice: 340000,
-    image: "./images/products/realmadrid-home-2025/main.webp",
-    gallery: [
-      "./images/products/realmadrid-home-2025/main.webp",
-      "./images/products/realmadrid-home-2025/front.webp",
-      "./images/products/realmadrid-home-2025/back.webp",
-      "./images/products/realmadrid-home-2025/side.webp",
-      "./images/products/realmadrid-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 28,
-    name: "Retro forma Real Madrid 2017/18 Ronaldo",
-    team: "realmadrid",
-    category: "forma",
-    price: 190000,
-    oldPrice: 350000,
-    image: "./images/products/retro-realmadrid-ronaldo-2017/main.webp",
-    gallery: [
-      "./images/products/retro-realmadrid-ronaldo-2017/main.webp",
-      "./images/products/retro-realmadrid-ronaldo-2017/front.webp",
-      "./images/products/retro-realmadrid-ronaldo-2017/back.webp",
-      "./images/products/retro-realmadrid-ronaldo-2017/side.webp",
-      "./images/products/retro-realmadrid-ronaldo-2017/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 29,
-    name: "Tottenham 2025/26 uy futbol formasi",
-    team: "tottenham",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/tottenham-home-2025/main.webp",
-    gallery: [
-      "./images/products/tottenham-home-2025/main.webp",
-      "./images/products/tottenham-home-2025/front.webp",
-      "./images/products/tottenham-home-2025/back.webp",
-      "./images/products/tottenham-home-2025/side.webp",
-      "./images/products/tottenham-home-2025/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 30,
-    name: "Retro forma Manchester United 2007/08 Ronaldo",
-    team: "manunited",
-    category: "forma",
-    price: 190000,
-    oldPrice: 350000,
-    image: "./images/products/retro-manunited-ronaldo-2007/main.webp",
-    gallery: [
-      "./images/products/retro-manunited-ronaldo-2007/main.webp",
-      "./images/products/retro-manunited-ronaldo-2007/front.webp",
-      "./images/products/retro-manunited-ronaldo-2007/back.webp",
-      "./images/products/retro-manunited-ronaldo-2007/side.webp",
-      "./images/products/retro-manunited-ronaldo-2007/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 31,
-    name: "Ispaniya 2026 uy futbol formasi",
-    team: "spain",
-    category: "forma",
-    price: 180000,
-    oldPrice: 320000,
-    image: "./images/products/spain-home-2026/main.webp",
-    gallery: [
-      "./images/products/spain-home-2026/main.webp",
-      "./images/products/spain-home-2026/front.webp",
-      "./images/products/spain-home-2026/back.webp",
-      "./images/products/spain-home-2026/side.webp",
-      "./images/products/spain-home-2026/shorts.webp",
-    ],
-    sizes: ["M", "L", "XL"],
-  },
-  {
-    id: 32,
-    name: "Nike Mercurial",
-    team: "none",
-    category: "butsiy",
-    price: 450000,
-    oldPrice: 520000,
-    image: "./images/boots/mercurial.png",
-    sizes: [39, 40, 41, 42, 43],
-  },
-  {
-    id: 33,
-    name: "Adidas Predator",
-    team: "none",
-    category: "butsiy",
-    price: 470000,
-    oldPrice: 550000,
-    image: "./images/boots/predator.png",
-    sizes: [40, 41, 42, 43, 44],
-  },
+    id:    "national",
+    name:  "Milliy jamoalar",
+    emoji: "🌍",
+    logo:  "./images/leagues/national.png",
+    teams: ["argentina","portugal","spain"]
+  }
 ];
 
-// ─── HOLAT ────────────────────────────────────────────────────────────────────
+/* ── KOMANDALAR ──────────────────────────────────────── */
+const TEAMS_INFO = {
+  realmadrid: { name: "Real Madrid",  logo: "./images/teams/realmadrid.png" },
+  barcelona:  { name: "Barcelona",    logo: "./images/teams/barcelona.png"  },
+  mancity:    { name: "Man City",     logo: "./images/teams/mancity.png"    },
+  manunited:  { name: "Man United",   logo: "./images/teams/manunited.png"  },
+  milan:      { name: "AC Milan",     logo: "./images/teams/milan.png"      },
+  arsenal:    { name: "Arsenal",      logo: "./images/teams/arsenal.png"    },
+  liverpool:  { name: "Liverpool",    logo: "./images/teams/liverpool.png"  },
+  chelsea:    { name: "Chelsea",      logo: "./images/teams/chelsea.png"    },
+  bayern:     { name: "Bayern",       logo: "./images/teams/bayern.png"     },
+  psg:        { name: "PSG",          logo: "./images/teams/psg.png"        },
+  inter:      { name: "Inter",        logo: "./images/teams/inter.png"      },
+  tottenham:  { name: "Tottenham",    logo: "./images/teams/tottenham.png"  },
+  argentina:  { name: "Argentina",    logo: "./images/teams/argentina.png"  },
+  portugal:   { name: "Portugaliya",  logo: "./images/teams/portugal.png"   },
+  spain:      { name: "Ispaniya",     logo: "./images/teams/spain.png"      },
+};
+
+/* ── HOLAT ───────────────────────────────────────────── */
 let currentSelectedProduct = null;
-let activeTeam             = "all";
+let activeLeague           = "all";   // tanlangan liga
+let activeTeam             = "all";   // tanlangan jamoa
 let searchQuery            = "";
 let searchDebounceTimer    = null;
 
-// ─── DOM ELEMENTLAR ───────────────────────────────────────────────────────────
+/* ── DOM ELEMENTLAR ─────────────────────────────────── */
 const formaProductsContainer = document.getElementById("forma-products");
 const bootsProductsContainer = document.getElementById("boots-products");
 const bootsSection           = document.getElementById("boots-section");
 const formaSection           = document.getElementById("forma-section");
 const formaSectionTitle      = document.getElementById("forma-section-title");
+const leaguesList            = document.getElementById("leagues-list");
+const teamsGrid              = document.getElementById("teams-grid");
+const showcaseTitle          = document.getElementById("showcase-title");
+const searchInput            = document.getElementById("search-input");
+const searchClearBtn         = document.getElementById("search-clear-btn");
+const searchResultsSection   = document.getElementById("search-results-section");
+const searchResultsGrid      = document.getElementById("search-results-grid");
+const searchResultsTitle     = document.getElementById("search-results-title");
+const orderModal             = document.getElementById("order-modal");
+const modalCloseBtn          = document.getElementById("modal-close-btn");
+const orderForm              = document.getElementById("order-form");
+const orderProductInput      = document.getElementById("order-product");
+const orderSizeSelect        = document.getElementById("order-size");
+const orderNameInput         = document.getElementById("order-name");
+const orderPhoneInput        = document.getElementById("order-phone");
+const orderQuantityInput     = document.getElementById("order-quantity");
+const orderPrintToggle       = document.getElementById("order-print-toggle");
+const printTextGroup         = document.getElementById("print-text-group");
+const orderPrintText         = document.getElementById("order-print-text");
+const orderAddress           = document.getElementById("order-address");
+const orderNote              = document.getElementById("order-note");
+const submitOrderBtn         = document.getElementById("submit-order-btn");
+const formStatus             = document.getElementById("form-status");
 
-const searchInput          = document.getElementById("search-input");
-const searchClearBtn       = document.getElementById("search-clear-btn");
-const searchResultsSection = document.getElementById("search-results-section");
-const searchResultsGrid    = document.getElementById("search-results-grid");
-const searchResultsTitle   = document.getElementById("search-results-title");
+/* ── YORDAMCHI FUNKSIYALAR ───────────────────────────── */
 
-const orderModal       = document.getElementById("order-modal");
-const modalCloseBtn    = document.getElementById("modal-close-btn");
-const orderForm        = document.getElementById("order-form");
-const orderProductInput= document.getElementById("order-product");
-const orderSizeSelect  = document.getElementById("order-size");
-const orderNameInput   = document.getElementById("order-name");
-const orderPhoneInput  = document.getElementById("order-phone");
-const orderQuantityInput=document.getElementById("order-quantity");
-const orderPrintToggle = document.getElementById("order-print-toggle");
-const printTextGroup   = document.getElementById("print-text-group");
-const orderPrintText   = document.getElementById("order-print-text");
-const orderAddress     = document.getElementById("order-address");
-const orderNote        = document.getElementById("order-note");
-const submitOrderBtn   = document.getElementById("submit-order-btn");
-const formStatus       = document.getElementById("form-status");
-
-// ─── YORDAMCHI ────────────────────────────────────────────────────────────────
-function formatPrice(price) {
-  return Number(price).toLocaleString("ru-RU") + " so'm";
+// 1. Jamoaga tegishli formalar sonini sanaydigan funksiya
+function countProductsByTeam(teamId) {
+  return products.filter(p => p.team === teamId && p.category === "forma").length;
 }
 
-function getDiscountPercent(oldPrice, newPrice) {
-  if (!oldPrice || !newPrice || oldPrice <= newPrice) return null;
-  return Math.round(((oldPrice - newPrice) / oldPrice) * 100);
-}
-
-function getTypeLabel(name) {
-  const n = name.toLowerCase();
-  if (n.includes("uzun yeng") || n.includes("long")) return "LONG";
-  if (n.includes("qisqa yeng"))                      return "SHORT";
-  if (n.includes("third") || n.includes("uchinchi")) return "3RD";
-  if (n.includes("home")  || n.includes("uy"))       return "HOME";
-  if (n.includes("away")  || n.includes("safar"))    return "AWAY";
-  if (n.includes("retro"))                           return "RETRO";
-  return "KIT";
-}
-
-// ─── STOCK YUKLASH ────────────────────────────────────────────────────────────
+// 2. Google Sheets'dan qoldiqlarni o'qiydigan funksiya
 async function loadStockFromSheets() {
-  const res     = await fetch(STOCK_SHEET_URL);
-  const csvText = await res.text();
-  const rows    = csvText.trim().split("\n").slice(1);
-  const map     = {};
-  rows.forEach((row) => {
-    const cols = row.split(",");
-    const name = cols[0]?.trim().replace(/^"|"$/g, "");
-    const val  = Number(cols[1]);
-    if (name) map[name] = Number.isNaN(val) ? 0 : val;
-  });
-  return map;
+  const stockMap = {};
+  try {
+    const res = await fetch(STOCK_SHEET_URL);
+    const csv = await res.text();
+    const rows = csv.trim().split("\n").slice(1);
+    for (const row of rows) {
+      const cols = row.split(",");
+      const name = cols[0]?.trim().replace(/^"|"$/g, "");
+      stockMap[name] = Number(cols[1]) || 0;
+    }
+  } catch (err) {
+    console.error("Qoldiqni yuklashda xato:", err);
+  }
+  return stockMap;
 }
 
-// ─── KARTA HTML ───────────────────────────────────────────────────────────────
+/* ── MAHSULOT KARTASI HTML ───────────────────────────── */
 function createProductCard(product) {
   const discount    = getDiscountPercent(product.oldPrice, product.price);
   const typeLabel   = getTypeLabel(product.name);
   const isTop       = !!product.isTop;
-  const isAvailable = Number(product.stock) > 0;
+  // stock null = yuklanmoqda (available deb ko'rsat)
+  const isLoading   = product.stock === null || product.stock === undefined;
+  const isAvailable = isLoading || Number(product.stock) > 0;
+  const stockLabel  = isLoading ? "Tekshirilmoqda..." : (isAvailable ? "Bor" : "Qolmadi");
 
   return `
     <div class="product-card ${!isAvailable ? "sold-out-card" : ""}"
+         data-product-id="${product.id}"
          onclick="goToProduct(${product.id})">
 
       <div class="card-badges">
@@ -627,22 +161,21 @@ function createProductCard(product) {
 
       <div class="product-image-wrap ${!isAvailable ? "sold-out-wrap" : ""}">
         <img src="${product.image}" alt="${product.name}"
-             class="product-image" loading="lazy" />
+             class="product-image" loading="lazy" decoding="async" />
         ${!isAvailable ? `<div class="sold-out-overlay">SOTUVDA QOLMADI</div>` : ""}
       </div>
 
       <div class="product-info">
         <h3 class="product-name">${product.name}</h3>
 
-        <div class="stock-badge ${!isAvailable ? "out" : ""}">
-          Sotuvda: ${isAvailable ? "Bor" : "Qolmadi"}
+        <div class="stock-badge ${!isAvailable && !isLoading ? "out" : ""}">
+          ${isLoading ? "⏳ " : (isAvailable ? "" : "")}Sotuvda: ${stockLabel}
         </div>
 
         <div class="price-box">
           <span class="new-price">${formatPrice(product.price)}</span>
           ${product.oldPrice
-            ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>`
-            : ""}
+            ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}
         </div>
 
         ${discount ? `<div class="discount-badge">-${discount}% chegirma</div>` : ""}
@@ -657,18 +190,107 @@ function createProductCard(product) {
           onclick="event.stopPropagation();${
             isAvailable ? `openOrderModal(${product.id});` : ""
           }"
-        >
-          ${!isAvailable ? "Mavjud emas" : "Buyurtma berish"}
-        </button>
+        >${!isAvailable ? "Mavjud emas" : "Buyurtma berish"}</button>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-// ─── QIDIRUV ──────────────────────────────────────────────────────────────────
+/* ── LIGALAR RENDER ──────────────────────────────────── */
+function renderLeagues() {
+  leaguesList.innerHTML = LEAGUES.map(lg => `
+    <button
+      class="league-btn ${lg.id === activeLeague ? "active" : ""}"
+      data-league="${lg.id}"
+    >
+      ${lg.logo
+        ? `<img src="${lg.logo}" alt="${lg.name}" class="league-logo-img"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+           <span class="league-emoji" style="display:none;">${lg.emoji}</span>`
+        : `<span class="league-emoji">${lg.emoji}</span>`}
+      <span class="league-name">${lg.name}</span>
+    </button>
+  `).join("");
+
+  leaguesList.querySelectorAll(".league-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const lid = btn.dataset.league;
+      selectLeague(lid);
+    });
+  });
+}
+
+function selectLeague(leagueId) {
+  activeLeague = leagueId;
+
+  // Liga tugmalarini yangilash
+  leaguesList.querySelectorAll(".league-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.league === leagueId);
+  });
+
+  // Teams showcase yangilash
+  renderTeamsShowcase(leagueId);
+
+  // Jamoa filtri reset (liga o'zgarganda barcha formalar)
+  if (activeTeam !== "all") {
+    activeTeam = "all";
+    renderProducts("all");
+    setupSlider("forma-products","forma-prev","forma-next", 7000);
+  }
+}
+
+/* ── TEAMS SHOWCASE RENDER ───────────────────────────── */
+function renderTeamsShowcase(leagueId) {
+  const league = LEAGUES.find(l => l.id === leagueId) || LEAGUES[0];
+  const teamIds = league.teams.length > 0
+    ? league.teams
+    : Object.keys(TEAMS_INFO);
+
+  if (showcaseTitle) {
+    showcaseTitle.textContent = leagueId === "all"
+      ? "Barcha komandalar"
+      : `${league.name} — komandalar`;
+  }
+
+  teamsGrid.innerHTML = teamIds.map(tid => {
+    const info  = TEAMS_INFO[tid];
+    if (!info) return "";
+    const count = countProductsByTeam(tid);
+    const isAct = tid === activeTeam;
+    return `
+      <div class="team-sc-card ${isAct ? "active-team" : ""}"
+           data-team="${tid}"
+           onclick="selectTeamFromShowcase('${tid}')">
+        <img src="${info.logo}" alt="${info.name}" class="team-sc-logo"
+             loading="lazy"
+             onerror="this.style.opacity='0.4';" />
+        <span class="team-sc-name">${info.name}</span>
+        <span class="team-sc-count">${count} ta forma</span>
+      </div>`;
+  }).join("");
+}
+
+function selectTeamFromShowcase(teamId) {
+  // Toggle: agar allaqachon shu jamoa tanlangan bo'lsa, reset qil
+  const newTeam = (activeTeam === teamId) ? "all" : teamId;
+  activeTeam = newTeam;
+
+  // Active class yangilash
+  teamsGrid.querySelectorAll(".team-sc-card").forEach(c => {
+    c.classList.toggle("active-team", c.dataset.team === newTeam);
+  });
+
+  renderProducts(newTeam);
+  setupSlider("forma-products","forma-prev","forma-next", 7000);
+
+  // Formalar bo'limiga smooth scroll
+  setTimeout(() => {
+    formaSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 80);
+}
+
+/* ── QIDIRUV ─────────────────────────────────────────── */
 function performSearch(query) {
   const q = query.toLowerCase().trim();
-
   if (!q) {
     searchResultsSection.classList.add("hidden");
     formaSection.classList.remove("hidden");
@@ -682,18 +304,17 @@ function performSearch(query) {
   bootsSection.style.display = "none";
   searchResultsSection.classList.remove("hidden");
 
-  const results = products.filter((p) => {
-    const hay = (p.name + " " + p.team).toLowerCase();
-    return hay.includes(q);
+  const results = products.filter(p => {
+    return (p.name + " " + p.team).toLowerCase().includes(q);
   });
 
   if (results.length === 0) {
-    searchResultsTitle.textContent = `"${query}" bo'yicha hech narsa topilmadi`;
+    searchResultsTitle.textContent = `"${query}" bo'yicha topilmadi`;
     searchResultsGrid.innerHTML = `
-      <div style="padding:40px 20px;text-align:center;
-                  color:#6b7280;font-size:15px;width:100%;">
+      <div style="padding:40px 20px;text-align:center;color:#6b7280;
+                  font-size:15px;width:100%;">
         😕 Bunday mahsulot topilmadi.<br>
-        <span style="font-size:13px;">Boshqa kalit so'z bilan qidirib ko'ring.</span>
+        <span style="font-size:13px;">Boshqa so'z bilan qidirib ko'ring.</span>
       </div>`;
     return;
   }
@@ -707,8 +328,8 @@ function clearSearch() {
   searchQuery = "";
   searchResultsSection.classList.add("hidden");
   formaSection.classList.remove("hidden");
+  bootsSection.style.display = activeTeam === "all" ? "" : "none";
   searchClearBtn.classList.add("hidden");
-  renderProducts(activeTeam);
   searchInput.focus();
 }
 
@@ -719,17 +340,13 @@ function setupSearch() {
     searchDebounceTimer = setTimeout(() => {
       searchQuery = val;
       performSearch(val);
-    }, 260);
+    }, 250);
   });
-
   searchClearBtn.addEventListener("click", clearSearch);
-
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") clearSearch();
-  });
+  searchInput.addEventListener("keydown", e => { if (e.key === "Escape") clearSearch(); });
 }
 
-// ─── RENDER ───────────────────────────────────────────────────────────────────
+/* ── PRODUCTS RENDER ─────────────────────────────────── */
 const TEAM_LABELS = {
   all:        "Formalar",
   realmadrid: "Real Madrid formalari",
@@ -751,18 +368,19 @@ const TEAM_LABELS = {
 
 function renderProducts(selectedTeam = "all") {
   activeTeam = selectedTeam;
-  if (searchQuery.trim()) return;
+  if (searchQuery.trim()) return; // qidiruv aktif bo'lsa render qilma
 
-  let formaList  = products.filter((p) => p.category === "forma");
-  const bootsList = products.filter((p) => p.category === "butsiy");
+  let formaList  = products.filter(p => p.category === "forma");
+  const bootsList = products.filter(p => p.category === "butsiy");
 
   if (selectedTeam !== "all") {
-    formaList = formaList.filter((p) => p.team === selectedTeam);
+    formaList = formaList.filter(p => p.team === selectedTeam);
   }
 
   formaProductsContainer.innerHTML = formaList.length
     ? formaList.map(createProductCard).join("")
-    : `<div style="padding:40px 20px;text-align:center;color:#6b7280;font-size:15px;width:100%;">
+    : `<div style="padding:40px 20px;text-align:center;color:#6b7280;
+                   font-size:15px;width:100%;min-width:280px;">
          Bu jamoa uchun hozircha forma mavjud emas.
        </div>`;
 
@@ -773,40 +391,14 @@ function renderProducts(selectedTeam = "all") {
   }
 
   bootsSection.style.display =
-    selectedTeam === "all" && bootsList.length > 0 ? "" : "none";
+    (selectedTeam === "all" && bootsList.length > 0) ? "" : "none";
 }
 
-// ─── JAMOA FILTRI ─────────────────────────────────────────────────────────────
-function setupTeamFilter() {
-  document.querySelectorAll(".team-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const team = btn.dataset.team;
-
-      // Qidiruv bo'lsa tozala
-      if (searchInput.value) {
-        searchInput.value = "";
-        searchQuery = "";
-        searchResultsSection.classList.add("hidden");
-        searchClearBtn.classList.add("hidden");
-        formaSection.classList.remove("hidden");
-      }
-
-      document.querySelectorAll(".team-btn").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      renderProducts(team);
-      setupSlider("forma-products", "forma-prev", "forma-next", 5000);
-
-      formaSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  });
-}
-
-// ─── SLIDER ───────────────────────────────────────────────────────────────────
-function setupSlider(containerId, prevBtnId, nextBtnId, interval = 5000) {
+/* ── SLIDER (sekinroq: 7000ms) ───────────────────────── */
+function setupSlider(containerId, prevId, nextId, interval = 7000) {
   const slider  = document.getElementById(containerId);
-  const prevBtn = document.getElementById(prevBtnId);
-  const nextBtn = document.getElementById(nextBtnId);
+  const prevBtn = document.getElementById(prevId);
+  const nextBtn = document.getElementById(nextId);
   if (!slider || !prevBtn || !nextBtn) return;
 
   const cards = slider.querySelectorAll(".product-card");
@@ -818,34 +410,39 @@ function setupSlider(containerId, prevBtnId, nextBtnId, interval = 5000) {
   prevBtn.style.display = "flex";
   nextBtn.style.display = "flex";
 
-  const scroll = () => {
-    const c = slider.querySelector(".product-card");
-    return c ? c.offsetWidth + 20 : 280;
+  const scrollAmt = () => {
+    // 2-row grid: 1 ustun = card genişliği + gap
+    const card = slider.querySelector(".product-card");
+    if (!card) return 252;
+    const style = window.getComputedStyle(slider);
+    const gap   = parseFloat(style.columnGap || style.gap || "14");
+    return card.offsetWidth + gap;
   };
 
-  prevBtn.onclick = () => slider.scrollBy({ left: -scroll(), behavior: "smooth" });
-  nextBtn.onclick = () => slider.scrollBy({ left:  scroll(), behavior: "smooth" });
+  prevBtn.onclick = () => slider.scrollBy({ left: -scrollAmt(), behavior: "smooth" });
+  nextBtn.onclick = () => slider.scrollBy({ left:  scrollAmt(), behavior: "smooth" });
 
   let timer;
   const start = () => {
     stop();
     timer = setInterval(() => {
-      if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 5)
+      const maxLeft = slider.scrollWidth - slider.clientWidth;
+      if (slider.scrollLeft >= maxLeft - 4)
         slider.scrollTo({ left: 0, behavior: "smooth" });
       else
-        slider.scrollBy({ left: scroll(), behavior: "smooth" });
+        slider.scrollBy({ left: scrollAmt(), behavior: "smooth" });
     }, interval);
   };
   const stop = () => clearInterval(timer);
 
   start();
-  [slider, prevBtn, nextBtn].forEach((el) => {
+  [slider, prevBtn, nextBtn].forEach(el => {
     el.onmouseenter = stop;
     el.onmouseleave = start;
   });
 }
 
-// ─── BUYURTMA MODAL ───────────────────────────────────────────────────────────
+/* ── BUYURTMA MODAL ──────────────────────────────────── */
 function getCurrentOrderPrice() {
   if (!currentSelectedProduct) return 0;
   return currentSelectedProduct.price + (orderPrintToggle.checked ? PRINT_EXTRA_PRICE : 0);
@@ -866,14 +463,14 @@ function refreshModalPrice() {
 }
 
 function openOrderModal(productId) {
-  const product = products.find((p) => p.id === Number(productId));
+  const product = products.find(p => p.id === Number(productId));
   if (!product || Number(product.stock) <= 0) return;
 
-  currentSelectedProduct   = product;
-  orderProductInput.value  = product.name;
+  currentSelectedProduct    = product;
+  orderProductInput.value   = product.name;
   orderSizeSelect.innerHTML =
     `<option value="">Tanlang</option>` +
-    product.sizes.map((s) => `<option value="${s}">${s}</option>`).join("");
+    product.sizes.map(s => `<option value="${s}">${s}</option>`).join("");
 
   orderQuantityInput.value = 1;
   orderPrintToggle.checked = false;
@@ -898,16 +495,16 @@ orderPrintToggle.addEventListener("change", () => {
 });
 
 modalCloseBtn.addEventListener("click", closeOrderModal);
-orderModal.addEventListener("click", (e) => { if (e.target === orderModal) closeOrderModal(); });
+orderModal.addEventListener("click", e => { if (e.target === orderModal) closeOrderModal(); });
 
-document.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
     if (orderModal.classList.contains("show")) closeOrderModal();
     closeDetailModal();
   }
 });
 
-orderForm.addEventListener("submit", async (e) => {
+orderForm.addEventListener("submit", async e => {
   e.preventDefault();
   if (!currentSelectedProduct) return;
 
@@ -939,10 +536,9 @@ orderForm.addEventListener("submit", async (e) => {
 
   try {
     await fetch(ORDER_SCRIPT_URL, {
-      method:  "POST",
-      mode:    "no-cors",
+      method: "POST", mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body:    JSON.stringify(payload),
+      body: JSON.stringify(payload),
     });
     formStatus.textContent = "✅ Buyurtma muvaffaqiyatli yuborildi!";
     formStatus.style.color = "#059669";
@@ -952,7 +548,7 @@ orderForm.addEventListener("submit", async (e) => {
     setTimeout(closeOrderModal, 1400);
   } catch (err) {
     console.error(err);
-    formStatus.textContent = "❌ Xatolik yuz berdi. Qaytadan urinib ko'ring.";
+    formStatus.textContent = "❌ Xatolik. Qaytadan urinib ko'ring.";
     formStatus.style.color = "#dc2626";
   } finally {
     submitOrderBtn.disabled    = false;
@@ -960,54 +556,45 @@ orderForm.addEventListener("submit", async (e) => {
   }
 });
 
-// ─── DETAIL MODAL ─────────────────────────────────────────────────────────────
+/* ── DETAIL MODAL ────────────────────────────────────── */
 function goToProduct(productId) {
-  const product = products.find((p) => p.id === Number(productId));
+  const product = products.find(p => p.id === Number(productId));
   if (!product) return;
 
   document.getElementById("detail-modal-overlay")?.remove();
 
-  const gallery     = product.gallery?.length ? product.gallery : [product.image];
-  const THUMB_LABELS= ["Asosiy", "Old", "Orqa", "Yon", "Short"];
-  const discount    = getDiscountPercent(product.oldPrice, product.price);
-  const isAvailable = Number(product.stock) > 0;
-  const typeLabel   = getTypeLabel(product.name);
+  const gallery      = product.gallery?.length ? product.gallery : [product.image];
+  const LABELS       = ["Asosiy","Old","Orqa","Yon","Short"];
+  const discount     = getDiscountPercent(product.oldPrice, product.price);
+  const isAvailable  = Number(product.stock) > 0;
+  const typeLabel    = getTypeLabel(product.name);
 
   const thumbsHTML = gallery.map((src, i) => `
-    <button
-      onclick="switchDetailImage('${src}',this)"
-      class="detail-thumb-btn${i === 0 ? " detail-thumb-active" : ""}"
-      title="${THUMB_LABELS[i] || "Rasm " + (i + 1)}"
-      style="flex:0 0 auto;width:68px;height:68px;padding:4px;border-radius:10px;
-             cursor:pointer;background:#f8fafc;
-             border:2px solid ${i === 0 ? "#1d4ed8" : "#e5e7eb"};
-             transition:border-color 0.18s;"
-    >
-      <img src="${src}" alt="${THUMB_LABELS[i] || ""}"
-           style="width:100%;height:100%;object-fit:contain;border-radius:6px;" />
-    </button>
+    <img src="${src}" alt="${product.name} - ${LABELS[i]||""}"
+         style="width:60px;height:60px;object-fit:cover;border-radius:8px;
+                cursor:pointer;box-shadow:0 0 0 2px rgba(0,0,0,0.1);"
+         onclick="document.getElementById('detail-main-img').src='${src}'" />
   `).join("");
-
   const overlay = document.createElement("div");
   overlay.id = "detail-modal-overlay";
   overlay.style.cssText =
     "position:fixed;inset:0;background:rgba(15,23,42,0.65);" +
     "display:flex;align-items:flex-start;justify-content:center;" +
     "padding:20px;z-index:200;overflow-y:auto;";
-  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeDetailModal(); });
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeDetailModal(); });
 
   overlay.innerHTML = `
     <div style="width:min(900px,100%);background:#fff;border-radius:24px;
                 padding:28px;position:relative;margin:auto;">
 
-      <button onclick="closeDetailModal()" style="
-        position:absolute;top:16px;right:16px;width:42px;height:42px;
-        border-radius:50%;background:#f3f4f6;font-size:26px;border:none;
-        cursor:pointer;display:flex;align-items:center;justify-content:center;
-        color:#111827;z-index:10;">×</button>
+      <button onclick="closeDetailModal()"
+              style="position:absolute;top:16px;right:16px;width:42px;height:42px;
+                     border-radius:50%;background:#f3f4f6;font-size:26px;border:none;
+                     cursor:pointer;display:flex;align-items:center;
+                     justify-content:center;color:#111827;z-index:10;">×</button>
 
-      <div id="detail-grid" style="display:grid;grid-template-columns:1.15fr 1fr;
-                                    gap:28px;align-items:start;">
+      <div id="detail-grid"
+           style="display:grid;grid-template-columns:1.15fr 1fr;gap:28px;align-items:start;">
 
         <!-- Chap: gallery -->
         <div>
@@ -1020,11 +607,10 @@ function goToProduct(productId) {
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">${thumbsHTML}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px;">
-            ${gallery.map((_, i) => `
+            ${gallery.map((_,i) => `
               <span style="font-size:11px;font-weight:700;color:#9ca3af;
-                           width:68px;text-align:center;">
-                ${THUMB_LABELS[i] || ""}
-              </span>`).join("")}
+                           width:66px;text-align:center;">${LABELS[i]||""}</span>`
+            ).join("")}
           </div>
         </div>
 
@@ -1071,7 +657,7 @@ function goToProduct(productId) {
           <div style="background:#f8fafc;border-radius:14px;padding:14px 16px;
                       margin-bottom:20px;font-size:14px;color:#374151;line-height:1.9;">
             ✅ Original sifatli forma<br>
-            ✅ Orqasiga ism/raqam yozdirish mumkin<br>
+            ✅ Orqasiga ism/raqam yozdirish<br>
             <span style="color:#059669;font-weight:700;padding-left:20px;">
               (+${formatPrice(PRINT_EXTRA_PRICE)} qo'shimcha)</span><br>
             ✅ M, L, XL razmerlar<br>
@@ -1103,9 +689,7 @@ function switchDetailImage(src, btn) {
   if (!img) return;
   img.style.opacity = "0";
   setTimeout(() => { img.src = src; img.style.opacity = "1"; }, 160);
-  document.querySelectorAll(".detail-thumb-btn").forEach((b) => {
-    b.style.borderColor = "#e5e7eb";
-  });
+  document.querySelectorAll(".detail-thumb-btn").forEach(b => { b.style.borderColor = "#e5e7eb"; });
   btn.style.borderColor = "#1d4ed8";
 }
 
@@ -1114,99 +698,73 @@ function closeDetailModal() {
   if (el) { el.remove(); document.body.style.overflow = ""; }
 }
 
-// ─── QIDIRUV + LOGO STILLARI (dinamik inject) ─────────────────────────────────
-(function injectStyles() {
-  const s = document.createElement("style");
-  s.textContent = `
-    .search-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-      max-width: 560px;
-    }
-    .search-icon {
-      position: absolute;
-      left: 16px;
-      font-size: 16px;
-      pointer-events: none;
-    }
-    .search-input {
-      width: 100%;
-      padding: 14px 48px 14px 46px;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 14px;
-      font-size: 15px;
-      font-family: inherit;
-      color: #111827;
-      background: #fff;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .search-input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
-    }
-    .search-clear {
-      position: absolute;
-      right: 12px;
-      background: #f3f4f6;
-      border: none;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #6b7280;
-      transition: background 0.18s;
-      line-height: 1;
-    }
-    .search-clear:hover { background: #e5e7eb; }
-    .team-logo {
-      width: 26px;
-      height: 26px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-    .products-grid-static {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      padding: 4px 0 10px;
-    }
-    .products-grid-static .product-card { flex: 0 0 260px; }
-    .hidden { display: none !important; }
-    @media (max-width: 768px) {
-      .products-grid-static .product-card { flex: 0 0 220px; }
-      .search-input { font-size: 14px; }
-    }
-    @media (max-width: 480px) {
-      .products-grid-static .product-card {
-        flex: 0 0 calc(50% - 10px);
-        min-width: 150px;
-      }
-    }
-  `;
-  document.head.appendChild(s);
-})();
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+/* ── INIT (performance: render avval, stock keyinroq) ── */
 async function initApp() {
+  // 1. Barcha productlarni "yuklanmoqda" holatida render qil
+  // (stock = null → kartalar darhol ko'rinadi)
+  products.forEach(p => { if (p.stock === undefined) p.stock = null; });
+
+  renderLeagues();
+  renderTeamsShowcase("all");
+  renderProducts();
+  setupSearch();
+
+  // Sliderlarni ham darhol setup qil
+  setupSlider("forma-products", "forma-prev", "forma-next", 7000);
+  setupSlider("boots-products", "boots-prev", "boots-next", 8000);
+
+  // 2. Background'da stock yukla — sahifa allaqachon ko'rinib bo'lgan
   try {
     const stockMap = await loadStockFromSheets();
-    products.forEach((p) => { p.stock = stockMap[p.name] ?? 0; });
-  } catch (err) {
-    console.error("Sheets yuklanmadi:", err);
-    products.forEach((p) => { p.stock = 0; });
-  }
+    products.forEach(p => { p.stock = stockMap[p.name] ?? 0; });
 
-  renderProducts();
-  setupTeamFilter();
-  setupSearch();
-  setupSlider("forma-products", "forma-prev", "forma-next", 5000);
-  setupSlider("boots-products", "boots-prev", "boots-next", 6000);
+    // Faqat stock badgelarini yangilash (full re-render emas)
+    updateStockBadgesInDOM(stockMap);
+  } catch (err) {
+    console.error("Stock yuklanmadi:", err);
+    products.forEach(p => { if (p.stock === null) p.stock = 0; });
+  }
+}
+
+/* Stock badgelarini DOM da silent yangilash */
+function updateStockBadgesInDOM(stockMap) {
+  products.forEach(p => {
+    const available = Number(p.stock) > 0;
+    // Barcha kartalar (slider + search results)
+    document.querySelectorAll(`[data-product-id="${p.id}"]`).forEach(card => {
+      // Stock badge
+      const badge = card.querySelector(".stock-badge");
+      if (badge) {
+        badge.textContent = `Sotuvda: ${available ? "Bor" : "Qolmadi"}`;
+        badge.className   = `stock-badge${available ? "" : " out"}`;
+      }
+      // Order button
+      const btn = card.querySelector(".order-btn");
+      if (btn) {
+        if (!available) {
+          btn.textContent = "Mavjud emas";
+          btn.classList.add("disabled");
+          btn.disabled = true;
+          btn.setAttribute("onclick","event.stopPropagation();");
+        }
+      }
+      // Sold-out overlay
+      const wrap = card.querySelector(".product-image-wrap");
+      const img  = card.querySelector(".product-image");
+      if (!available && wrap && !wrap.querySelector(".sold-out-overlay")) {
+        wrap.classList.add("sold-out-wrap");
+        const overlay = document.createElement("div");
+        overlay.className = "sold-out-overlay";
+        overlay.textContent = "SOTUVDA QOLMADI";
+        wrap.appendChild(overlay);
+        if (img) {
+          img.style.filter    = "grayscale(20%) brightness(0.72)";
+          img.style.transform = "scale(0.98)";
+        }
+        card.classList.add("sold-out-card");
+      }
+    });
+  });
 }
 
 initApp();
